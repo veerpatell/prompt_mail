@@ -20,14 +20,6 @@ os.environ["OPENAI_API_KEY"] = 'OPENAI_API_KEY'
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
-pdf_tool = PDFSearchTool()
-
-# Instantiate tools
-search_tool = SerperDevTool(api_key=os.getenv("SERPER_API_KEY"))
-txt_tool = TXTSearchTool()
-csv_tool = CSVSearchTool()
-ALL_TOOLS = (pdf_tool, search_tool, txt_tool, csv_tool)
-
 llm = LLM(
     model="mistral/mistral-large-latest",
     temperature=0.7
