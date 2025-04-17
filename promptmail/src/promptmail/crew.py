@@ -14,7 +14,17 @@ import openai
 from embedchain import App
 from crewai_tools import SerperDevTool, PDFSearchTool, TXTSearchTool, CSVSearchTool
 import os
-
+from crewai_tools import SerperDevTool, PDFSearchTool, TXTSearchTool, CSVSearchTool
+pdf_tool = PDFSearchTool()
+search_tool = SerperDevTool(api_key=os.getenv("SERPER_API_KEY"))
+txt_tool = TXTSearchTool()
+csv_tool = CSVSearchTool()
+ALL_TOOLS = {
+        "search_tool": SerperDevTool(api_key=os.getenv("SERPER_API_KEY")),
+        "pdf_tool": PDFSearchTool(),
+        "txt_tool": TXTSearchTool(),
+        "csv_tool": CSVSearchTool()
+    }
 os.environ["OPENAI_API_KEY"] = 'OPENAI_API_KEY'
 # If you want to run a snippet of code before or after the crew starts, 
 # you can use the @before_kickoff and @after_kickoff decorators
