@@ -1,0 +1,75 @@
+client_engagement_task:
+  description: >
+    Start a conversation with the client and ask:
+    - What is the goal of your email?
+    - What is the topic to be researched?
+    - What tone do you prefer for the email (formal/friendly/etc.)?
+    - Who is your target audience?
+    - When would you like the email to be sent (preferred send time)?
+    Extract and structure all the details clearly. There can be some details missing or some details extra, so adjust accordingly.
+    if any error raised by the team, solve it by talking to the client.
+  expected_output: >
+    A structured object containing:
+      - client_name
+      - email_goal
+      - topic
+      - preferred_send_time
+      - tone
+      - target_audience
+    This data will be passed to the Manager and other agents for downstream tasks.
+  agent: Client Service Executive
+  human_input : True
+
+
+manager_delegation_task :
+    description: >
+      Review the client's engagement summary and plan the overall workflow.
+      Delegate specific tasks to the Researcher, Email Writer, and Scheduler with clear priorities and timelines.
+      Confirm delegation with each agent and clarify any uncertainties.
+      If recieve any error from other agents give it to client_engagement_agent
+    expected_output: >
+      A comprehensive task plan that assigns clear responsibilities and timelines to the Researcher, Email Writer, and Scheduler agents.
+    agent: Manager
+    depends_on : 
+      - client_engagement_task
+
+research_task :
+    description: >
+      Gather and verify relevant data from websites and user-uploaded documents (PDFs, DOCX, TXT, etc.).
+      Prioritize recent and reputable sources while extracting key data points.
+      Provide a detailed, curated summary of findings.
+      If the website link is not given you need check for the email given and then look at the domain website for context.
+      If any issue or missing details raise it to manager.  
+    expected_output: >
+      A detailed summary containing curated data and insights that directly support the email content, highlighting relevant facts and figures.
+    agent: Researcher
+    depends_on :
+      - manager_delegation_task
+    
+
+writer_task :
+    description: >
+      Compose a polished, engaging email draft using the curated research data, aligned with the client's objectives, tone, and target audience.
+      Incorporate recommendations from the initial engagement and managerial guidance.
+      Ensure the draft has a strong opener, a focused body, and a clear call to action.
+      If any issue or missing details raise it to manager. 
+    expected_output: >
+      A complete and review-ready email draft that fulfills the client's requirements and is ready for final scheduling or client approval.
+    agent: Email Writer
+    depends_on : 
+      - manager_delegation_task
+      - research_task
+    
+
+scheduler_task:
+    description: >
+      Based on the client's preferences, either schedule the email for delivery or save it as a draft.
+      Verify optimal send times, platform settings, and any potential scheduling conflicts.
+      Confirm details with the client if necessary. 
+      If any issue or missing details raise it to manager. 
+    expected_output: >
+      A confirmation response detailing either the scheduled email with timing details or the status of the saved draft.
+    agent: Scheduler
+    depends_on :
+      - manager_delegation_task
+      - writer_task
