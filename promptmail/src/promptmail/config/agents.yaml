@@ -27,11 +27,6 @@ manager :
     allow_delegation: true
     verbose: true
     planning: true
-    memory: true
-    tools:
-      - search_tool
-      - pdf_tool
-      - txt_tool
     
 
 researcher :
@@ -45,12 +40,7 @@ researcher :
       If multiple sources are available, prioritize the most recent, reputable, or client-provided ones.
     allow_delegation: false
     verbose: true
-    tools:
-        - search_tool
-        - pdf_tool
-        - txt_tool
-        - csv_tool
-        - scrape_tool
+
 
 email_writer :
     role: Email Writer

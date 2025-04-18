@@ -23,7 +23,7 @@ from promptmail import ALL_TOOLS
       #  csv_tool: CSVSearchTool(),
        # scrape_tool : ScrapeWebsiteTool()
     
-    
+
 
 os.environ["OPENAI_API_KEY"] = 'OPENAI_API_KEY'
 # If you want to run a snippet of code before or after the crew starts, 
@@ -55,7 +55,7 @@ short_term_memory = ShortTermMemory(
                 type="short_term",
                 path="/knowledge/"
             )
-        ),
+        )
 
 entity_memory = EntityMemory(
         storage=RAGStorage(
@@ -68,13 +68,25 @@ entity_memory = EntityMemory(
             type="short_term",
             path="/knowledge/"
         )
-    ),
+    )
 
 @CrewBase
 class Promptmail:
     agents_config_path = 'config/agents.yaml'
     tasks_config_path = 'config/tasks.yaml'
 
+    @agent
+    def client_service_executive(self) -> Agent:
+        return Agent(
+            config=self.agents_config_path,
+            id="client_service_executive",
+            verbose=True,
+            llm=llmG,
+            memory=True,
+            long_term_memory=ltm
+
+        )
+    
     @agent
     def manager(self) -> Agent:
         return Agent(
@@ -105,6 +117,7 @@ class Promptmail:
             ]
         )
 
+
     @agent
     def writer(self) -> Agent:
         return Agent(
@@ -115,7 +128,30 @@ class Promptmail:
             memory=True,
             long_term_memory=ltm
         )
-
+    @agent
+    def scheduler(self) -> Agent:
+        return Agent(
+            config=self.agents_config_path,
+            id="scheduler",
+            verbose=True,
+            llm=llm,
+            memory=True,
+            
+        )
+    @task
+    def client_engagement_task(self) -> Task:
+        return Task(
+            config=self.tasks_config_path,
+            id="client_engagement_task"
+        )
+    
+    @task
+    def manager_task(self) -> Task:
+        return Task(
+            config=self.tasks_config_path,
+            id="manager_task"
+        )
+    
     @task
     def research_task(self) -> Task:
         return Task(
@@ -129,7 +165,13 @@ class Promptmail:
             config=self.tasks_config_path,
             id="writer_task"
         )
-
+    @task
+    def scheduler_task(self) -> Task:
+        return Task(
+            config=self.tasks_config_path,
+            id="scheduler_task"
+        )
+    
     @crew
     def crew(self, inputs=None) -> Crew:
         sources = []
@@ -140,8 +182,8 @@ class Promptmail:
                 sources.append(CSVKnowledgeSource(file_paths=inputs["csv_files"]))
 
         return Crew(
-            agents=[self.manager(), self.researcher(), self.writer()],
-            tasks=[self.research_task(), self.writer_task()],
+            agents=[self.client_service_executive(), self.manager(), self.researcher(), self.writer(), self.scheduler()],
+            tasks=[self.client_engagement_task(), self.research_task(), self.writer_task(), self.scheduler_task()],
             process=Process.hierarchical,
             llm=llmG,
             memory=True,
