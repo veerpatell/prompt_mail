@@ -1,7 +1,6 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai import Agent, Crew, Process, Task, LLM
-from crewai.project import CrewBase, agent, crew, task
 from crewai.memory import LongTermMemory, ShortTermMemory, EntityMemory
 from crewai.memory.storage.rag_storage import RAGStorage
 from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
@@ -14,17 +13,18 @@ import openai
 from embedchain import App
 from crewai_tools import SerperDevTool, PDFSearchTool, TXTSearchTool, CSVSearchTool
 import os
-from crewai_tools import SerperDevTool, PDFSearchTool, TXTSearchTool, CSVSearchTool
-pdf_tool = PDFSearchTool()
-search_tool = SerperDevTool(api_key=os.getenv("SERPER_API_KEY"))
-txt_tool = TXTSearchTool()
-csv_tool = CSVSearchTool()
-ALL_TOOLS = {
-        "search_tool": SerperDevTool(api_key=os.getenv("SERPER_API_KEY")),
-        "pdf_tool": PDFSearchTool(),
-        "txt_tool": TXTSearchTool(),
-        "csv_tool": CSVSearchTool()
-    }
+from pydantic import SkipValidation
+from promptmail.tools import ALL_TOOLS
+from promptmail import ALL_TOOLS
+
+   #     search_tool : SerperDevTool(),
+    #    pdf_tool: PDFSearchTool(),
+     #   txt_tool: TXTSearchTool(),
+      #  csv_tool: CSVSearchTool(),
+       # scrape_tool : ScrapeWebsiteTool()
+    
+    
+
 os.environ["OPENAI_API_KEY"] = 'OPENAI_API_KEY'
 # If you want to run a snippet of code before or after the crew starts, 
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -83,7 +83,9 @@ class Promptmail:
             verbose=True,
             llm=llmG,
             memory=True,
+            tools=[ALL_TOOLS["search_tool"]],
             long_term_memory=ltm
+
         )
 
     @agent
@@ -94,7 +96,13 @@ class Promptmail:
             verbose=True,
             llm=llmG,
             memory=True,
-            long_term_memory=ltm
+            long_term_memory=ltm,
+            tools = [
+            ALL_TOOLS["search_tool"],
+            ALL_TOOLS["pdf_tool"],
+            ALL_TOOLS["txt_tool"],
+            ALL_TOOLS["csv_tool"]
+            ]
         )
 
     @agent
@@ -139,5 +147,6 @@ class Promptmail:
             memory=True,
             long_term_memory=ltm,
             knowledge_sources=sources,
-            verbose=True
+            verbose=True,
+            tools = ALL_TOOLS
         )

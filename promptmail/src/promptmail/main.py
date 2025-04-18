@@ -3,7 +3,12 @@ import sys
 import warnings
 from datetime import datetime
 from promptmail.crew import Promptmail
-
+from promptmail.tools import search_tool, pdf_tool, txt_tool, csv_tool, scrape_tool 
+import pydantic
+import os
+class MyModel(pydantic.BaseModel):
+    class Config:
+        validation = False
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
 # This main file is intended to be a way for you to run your

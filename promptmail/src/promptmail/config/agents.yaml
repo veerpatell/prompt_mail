@@ -1,3 +1,4 @@
+
 client_service_executive :
     role: Client Service Executive
     goal: Engage with clients to extract detailed information about their goals and preferences, and summarize their needs clearly for the team.
@@ -49,7 +50,8 @@ researcher :
         - pdf_tool
         - txt_tool
         - csv_tool
-    
+        - scrape_tool
+
 email_writer :
     role: Email Writer
     goal: Compose clear, engaging, and personalized email drafts using the research data and client’s tone, intent, and target audience.
