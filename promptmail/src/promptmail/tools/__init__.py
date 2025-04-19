@@ -1,7 +1,6 @@
 from crewai_tools import SerperDevTool, PDFSearchTool, TXTSearchTool, CSVSearchTool, ScrapeWebsiteTool
 import os
 
-
 search_tool = SerperDevTool(api_key=os.getenv("SERPER_API_KEY"))
 pdf_tool = PDFSearchTool()
 txt_tool = TXTSearchTool()
@@ -14,4 +13,4 @@ ALL_TOOLS = {
     "txt_tool": txt_tool,
     "csv_tool": csv_tool,
     "scrape_tool" : scrape_tool
-}
+    }

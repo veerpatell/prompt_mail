@@ -23,6 +23,20 @@ from promptmail import ALL_TOOLS
       #  csv_tool: CSVSearchTool(),
        # scrape_tool : ScrapeWebsiteTool()
     
+#files = {
+#    'agents': 'config/agents.yaml',
+#    'tasks': 'config/tasks.yaml',}
+
+
+#configs = {}
+
+#for config_type, file_path in file.items():
+#    with open(file_path, 'r') as file:
+#        configs[config_type] = yaml.safe_load(file)
+
+#agents_config = configs['agents']
+#tasks_config = configs['tasks']
+
 
 
 os.environ["OPENAI_API_KEY"] = 'OPENAI_API_KEY'
@@ -36,7 +50,7 @@ llm = LLM(
 )
 
 llmG = LLM(
-    model="gemini/gemini-2.0-pro-latest",
+    model="gemini/gemini-1.5-pro",
     temperature=0.7,
 )
 
@@ -70,43 +84,46 @@ entity_memory = EntityMemory(
         )
     )
 
+with open('src/promptmail/config/agents.yaml', 'r') as a_file:
+    AGENTS_CONFIG = yaml.safe_load(a_file)
+
+with open('src/promptmail/config/tasks.yaml', 'r') as t_file:
+    TASKS_CONFIG = yaml.safe_load(t_file)
+
 @CrewBase
 class Promptmail:
-    agents_config_path = 'config/agents.yaml'
-    tasks_config_path = 'config/tasks.yaml'
+    agents_config = 'config/agents.yaml'
+    tasks_config = 'config/tasks.yaml'
 
     @agent
     def client_service_executive(self) -> Agent:
         return Agent(
-            config=self.agents_config_path,
-            id="client_service_executive",
+            config=self.agents_config['client_service_executive'],
             verbose=True,
-            llm=llmG,
+            llm=llm,
             memory=True,
-            long_term_memory=ltm
+            long_term_memory=ltm,
+            human_imput = True,
+            tools = [ALL_TOOLS["input_tool"]]
 
         )
     
     @agent
     def manager(self) -> Agent:
         return Agent(
-            config=self.agents_config_path,
-            id="manager",
+            config=self.agents_config['manager'],
             verbose=True,
-            llm=llmG,
+            llm=llm,
             memory=True,
-            tools=[ALL_TOOLS["search_tool"]],
             long_term_memory=ltm
-
         )
 
     @agent
     def researcher(self) -> Agent:
         return Agent(
-            config=self.agents_config_path,
-            id="researcher",
+            config=self.agents_config['researcher'],
             verbose=True,
-            llm=llmG,
+            llm=llm,
             memory=True,
             long_term_memory=ltm,
             tools = [
@@ -119,10 +136,9 @@ class Promptmail:
 
 
     @agent
-    def writer(self) -> Agent:
+    def email_writer(self) -> Agent:
         return Agent(
-            config=self.agents_config_path,
-            id="email_writer",
+            config=self.agents_config['email_writer'],
             verbose=True,
             llm=llm,
             memory=True,
@@ -131,45 +147,39 @@ class Promptmail:
     @agent
     def scheduler(self) -> Agent:
         return Agent(
-            config=self.agents_config_path,
-            id="scheduler",
+            config= self.agents_config['scheduler'],
             verbose=True,
             llm=llm,
-            memory=True,
+            memory=True
             
         )
     @task
     def client_engagement_task(self) -> Task:
         return Task(
-            config=self.tasks_config_path,
-            id="client_engagement_task"
+            config=self.tasks_config['client_engagement_task']
         )
     
     @task
-    def manager_task(self) -> Task:
+    def manager_delegation_task(self) -> Task:
         return Task(
-            config=self.tasks_config_path,
-            id="manager_task"
+            config=self.tasks_config['manager_delegation_task']
         )
     
     @task
-    def research_task(self) -> Task:
+    def researcher_task(self) -> Task:
         return Task(
-            config=self.tasks_config_path,
-            id="research_task"
+            config=self.tasks_config['researcher_task']
         )
 
     @task
     def writer_task(self) -> Task:
         return Task(
-            config=self.tasks_config_path,
-            id="writer_task"
+            config=self.tasks_config['writer_task']
         )
     @task
     def scheduler_task(self) -> Task:
         return Task(
-            config=self.tasks_config_path,
-            id="scheduler_task"
+            config=self.tasks_config['scheduler_task']
         )
     
     @crew
@@ -182,10 +192,11 @@ class Promptmail:
                 sources.append(CSVKnowledgeSource(file_paths=inputs["csv_files"]))
 
         return Crew(
-            agents=[self.client_service_executive(), self.manager(), self.researcher(), self.writer(), self.scheduler()],
-            tasks=[self.client_engagement_task(), self.research_task(), self.writer_task(), self.scheduler_task()],
+            agents=[self.client_service_executive(), self.researcher(), self.email_writer(), self.scheduler()],
+            tasks=[self.client_engagement_task(),self.manager_delegation_task(), self.researcher_task(), self.writer_task(), self.scheduler_task()],
             process=Process.hierarchical,
-            llm=llmG,
+            manager_agent= self.manager(),
+            llm=llm,
             memory=True,
             long_term_memory=ltm,
             knowledge_sources=sources,

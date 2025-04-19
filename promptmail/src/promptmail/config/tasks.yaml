@@ -17,7 +17,7 @@ client_engagement_task:
       - tone
       - target_audience
     This data will be passed to the Manager and other agents for downstream tasks.
-  agent: Client Service Executive
+  agent: client_service_executive
   human_input : True
 
 
@@ -29,11 +29,11 @@ manager_delegation_task :
       If recieve any error from other agents give it to client_engagement_agent
     expected_output: >
       A comprehensive task plan that assigns clear responsibilities and timelines to the Researcher, Email Writer, and Scheduler agents.
-    agent: Manager
+    agent: manager
     depends_on : 
       - client_engagement_task
 
-research_task :
+researcher_task :
     description: >
       Gather and verify relevant data from websites and user-uploaded documents (PDFs, DOCX, TXT, etc.).
       Prioritize recent and reputable sources while extracting key data points.
@@ -42,7 +42,7 @@ research_task :
       If any issue or missing details raise it to manager.  
     expected_output: >
       A detailed summary containing curated data and insights that directly support the email content, highlighting relevant facts and figures.
-    agent: Researcher
+    agent: researcher
     depends_on :
       - manager_delegation_task
     
@@ -55,7 +55,7 @@ writer_task :
       If any issue or missing details raise it to manager. 
     expected_output: >
       A complete and review-ready email draft that fulfills the client's requirements and is ready for final scheduling or client approval.
-    agent: Email Writer
+    agent: email_writer
     depends_on : 
       - manager_delegation_task
       - research_task
@@ -69,7 +69,7 @@ scheduler_task:
       If any issue or missing details raise it to manager. 
     expected_output: >
       A confirmation response detailing either the scheduled email with timing details or the status of the saved draft.
-    agent: Scheduler
+    agent: scheduler
     depends_on :
       - manager_delegation_task
       - writer_task
