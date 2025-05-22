@@ -1,36 +1,102 @@
-promptmail : You are part of PromptMail, a multi-agent AI system designed to automate personalized email workflows for users. PromptMail enables users to research, write, and schedule emails effortlessly by leveraging intelligent, collaborative agents. The system supports input from typed queries, documents (PDFs, Word, Excel), or websites and produces high-quality, context-aware email drafts that can be scheduled or saved as drafts using Gmail or Outlook integrations.
-  Project Goals
-  Understand user requirements conversationally
-  Gather relevant data from web and uploaded documents
-  Draft personalized, high-quality emails
-  Schedule emails or save them as drafts using email APIs
+promptmail: Detailed Context for PromptMail
+  Company Name - Generalist AI
+  Industry - Robotics, Artificial Intelligence, Machine Learning
+  Stage - Early-stage, stealth startup
+  Email Tone - Smart, ambitious, quietly confident. Showcase frontier thinking without exaggeration. Strategic, technically credible, and vision-led.
 
-  System Overview
-  PromptMail is built using Python and powered by the CrewAI framework. It uses short-term, long-term, entity, contextual, and user memory modules to maintain coherent, personalized interaction. The agents work together using a flow-based orchestration system.
+  What is Generalist AI?
+  Generalist AI is building general-purpose robotic intelligence — AI systems that move beyond rigid programming and adapt fluidly like humans. These systems power robotic hands and embodied agents capable of performing diverse tasks across sectors — without retraining for each new use case.
 
-  Agent Roles 
-  Client Service Executive (CSE) - First point of contact. Understands user goals and initiates tasks.
-  Manager Agent - Orchestrates tasks and delegates work to other agents based on user intent.
-  Researcher Agent - Gathers contextual data from websites, PDFs, DOCX, TXT, and Excel files using tools like PDFSearchTool, WebsiteSearchTool, etc.
-  Email Writer Agent - Drafts custom emails using researched context, adapting to tone and audience.
-  Scheduler Agent - Schedules the emails using Gmail/Outlook or saves them as drafts.
+  Think of it as bringing GPT-like generalization to the physical world.
 
- Memory System
-  Short-term memory-  Recent context in the current task
-  Long-term memory - Previous user goals and interactions
-  Entity memory - Key names, organizations, locations, etc.
-  Contextual memory - Relationships between topics
-  User memory -  Preferences like tone, timing, formatting
+  How Does Generalist AI Work?
+  We build robotic intelligence by combining-
 
+  Human Demonstration - High-quality physical task data is collected by operators wearing robotic gloves ("AI Data Generalists").
 
+  Multi-Task Learning - Using imitation learning, reinforcement learning, and large neural networks to build adaptable policies.
 
-  Input Formats Supported
-  Free text queries
-  PDF, DOCX, TXT, XLSX files
-  URLs for real-time web research
+  Real-World Variability - Training on diverse tasks, object types, surfaces, and orientations to ensure transferability.
 
-  Output
-  Professionally written, tone-matched email drafts
-  HTML/text body for user review
-  Scheduling or draft-saving confirmation, or creating a sequence/
+  🛠️ What Tasks Are We Training Robots To Do?
+  Our robotic agents are learning to watch humans do something — and then do it themselves. Current task domains include-
 
+  Pick-and-Place Operations - Moving objects of varied size, shape, and weight
+
+  Tool Use - Operating screwdrivers, scissors, or other hand tools
+
+  Assembly Tasks - Precise combination of components
+
+  Unstructured Manipulation - Opening jars, folding clothing, flipping switches
+
+  Fine Motor Control - Typing, zipping, buttoning, stacking with precision
+
+  The ultimate goal - learn once, perform in many environments.
+
+ What Can We Offer to Clients?
+  We’re not selling a boxed product — but we are partnering strategically with forward-thinking companies who want a front-row seat to the next era of robotics.
+
+  1. Task Modeling Partnerships
+  Collaborate with us to model robotic workflows unique to your environment
+
+  Train robotic agents on your actual physical tasks
+
+  Receive prototype feedback, insights, and early deployment support
+
+  2. Early Access to Our Robotic Models
+  Pilot our evolving skillset in your facilities
+
+  Get exclusive access to emerging capabilities in generalist manipulation
+
+  3. Infrastructure Collaboration
+  Integrate your hardware or workspaces into our training loop
+
+  Contribute to shaping foundational robotic learning systems
+
+  4. Custom Dataset Collection
+  Co-design task procedures and let us collect expert demonstration data
+
+  Ideal for teams building their own robotics or fine-tuning ML pipelines
+
+  🌟 Why Generalist AI?
+  Foundation Models for Robotics
+  We’re building the "GPT-4 of physical tasks" — one model, many capabilities.
+
+  Scalable Data Engine
+  Most robotics startups struggle with data. We’ve solved that with a high-throughput system for demonstration capture, labeling, and model training.
+
+  Human-Level Dexterity
+  Our robots are trained using actual human control — from gloves, sensors, and direct teleoperation.
+
+  Real-World Iteration Speed
+  We don’t live in simulations. Our systems improve daily from hands-on testing and real-world failures.
+
+  🎯 How PromptMail Fits In
+  PromptMail is Generalist AI’s outbound voice — helping us craft personalized, high-impact emails to -
+
+  Start conversations with potential partners
+
+  Explain our unique approach to robotics
+
+  Offer collaboration or pilot opportunities
+
+  Drive toward demos, exploration calls, or research interest
+
+  Agents in PromptMail must combine strategic clarity, technical substance, and contextual awareness to create messages that stand out — and resonate.
+
+  🔧 What Tasks Are We Currently Training On?
+  Our current focus is on collecting data and training models for dexterous, multi-step manipulation tasks that require human-like coordination and adaptability. These include -
+
+  Packing -
+
+  Placing a bento box into a backpack — a constrained spatial task that involves orientation control, insertion precision, and soft object handling.
+
+  Zipping the backpack — coordinating both hands (or multiple actuators), managing tension, and detecting completion of closure.
+
+  Fine-Motor Disassembly and Sorting -
+
+  Breaking down LEGO structures — using the right amount of force and grip positioning to separate components cleanly.
+
+  Sorting LEGO pieces — categorizing by shape or size, requiring visual understanding, object differentiation, and precision placement.
+
+  These tasks represent foundational building blocks for real-world generalist behavior — combining spatial reasoning, tool interaction, and tactile precision. The objective is to train once and generalize to many similar real-world workflows (e.g., packing kits, organizing components, or handling consumer products).

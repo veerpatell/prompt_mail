@@ -7,7 +7,7 @@ from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
 from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
 from crewai.knowledge.source.csv_knowledge_source import CSVKnowledgeSource
 import os
-import yaml # Replace with actual embedder class
+import yaml
 import os
 import openai
 from embedchain import App
@@ -17,32 +17,11 @@ from pydantic import SkipValidation
 from promptmail.tools import ALL_TOOLS
 from promptmail import ALL_TOOLS
 
-   #     search_tool : SerperDevTool(),
-    #    pdf_tool: PDFSearchTool(),
-     #   txt_tool: TXTSearchTool(),
-      #  csv_tool: CSVSearchTool(),
-       # scrape_tool : ScrapeWebsiteTool()
-    
-#files = {
-#    'agents': 'config/agents.yaml',
-#    'tasks': 'config/tasks.yaml',}
 
 
-#configs = {}
+#os.environ["OPENAI_API_KEY"] = 'OPENAI_API_KEY'
+os.environ['MISTRAL_API_KEY'] = 'c1w0IxaIrpg5q65Zq9pX5vMcTc2lJxMp'
 
-#for config_type, file_path in file.items():
-#    with open(file_path, 'r') as file:
-#        configs[config_type] = yaml.safe_load(file)
-
-#agents_config = configs['agents']
-#tasks_config = configs['tasks']
-
-
-
-os.environ["OPENAI_API_KEY"] = 'OPENAI_API_KEY'
-# If you want to run a snippet of code before or after the crew starts, 
-# you can use the @before_kickoff and @after_kickoff decorators
-# https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
 llm = LLM(
     model="mistral/mistral-large-latest",
@@ -95,25 +74,14 @@ class Promptmail:
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
 
-    @agent
-    def client_service_executive(self) -> Agent:
-        return Agent(
-            config=self.agents_config['client_service_executive'],
-            verbose=True,
-            llm=llm,
-            memory=True,
-            long_term_memory=ltm,
-            human_imput = True,
-            tools = [ALL_TOOLS["input_tool"]]
 
-        )
-    
     @agent
     def manager(self) -> Agent:
         return Agent(
             config=self.agents_config['manager'],
             verbose=True,
             llm=llm,
+            human_imput = True,
             memory=True,
             long_term_memory=ltm
         )
@@ -153,12 +121,7 @@ class Promptmail:
             memory=True
             
         )
-    @task
-    def client_engagement_task(self) -> Task:
-        return Task(
-            config=self.tasks_config['client_engagement_task']
-        )
-    
+
     @task
     def manager_delegation_task(self) -> Task:
         return Task(
@@ -192,8 +155,8 @@ class Promptmail:
                 sources.append(CSVKnowledgeSource(file_paths=inputs["csv_files"]))
 
         return Crew(
-            agents=[self.client_service_executive(), self.researcher(), self.email_writer(), self.scheduler()],
-            tasks=[self.client_engagement_task(),self.manager_delegation_task(), self.researcher_task(), self.writer_task(), self.scheduler_task()],
+            agents=[ self.researcher(), self.email_writer(), self.scheduler()],
+            tasks=[self.manager_delegation_task(), self.researcher_task(), self.writer_task(), self.scheduler_task()],
             process=Process.hierarchical,
             manager_agent= self.manager(),
             llm=llm,

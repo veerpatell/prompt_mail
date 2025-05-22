@@ -1,75 +1,132 @@
-client_engagement_task:
+manager_delegation_task:
   description: >
-    Start a conversation with the client and ask:
-    - What is the goal of your email?
-    - What is the topic to be researched?
-    - What tone do you prefer for the email (formal/friendly/etc.)?
-    - Who is your target audience?
-    - When would you like the email to be sent (preferred send time)?
-    Extract and structure all the details clearly. There can be some details missing or some details extra, so adjust accordingly.
-    if any error raised by the team, solve it by talking to the client.
+    As the Manager, orchestrate the email campaign workflow based on the client's engagement summary. Responsibilities include:
+    1. Review the client's engagement summary.
+    2. Develop a comprehensive task plan for the Researcher, Email Writer, and Scheduler.
+    3. Communicate and confirm task delegation.
+    4. Monitor progress and address issues.
+    5. Maintain documentation of the process.
   expected_output: >
-    A structured object containing:
-      - client_name
-      - email_goal
-      - topic
-      - preferred_send_time
-      - tone
-      - target_audience
-    This data will be passed to the Manager and other agents for downstream tasks.
-  agent: client_service_executive
-  human_input : True
+    A structured task plan detailing:
+    - Assigned tasks for Researcher, Email Writer, and Scheduler.
+    - Specific objectives, instructions, and deadlines for each task.
+    - Confirmation of task acceptance by each agent.
+    - Notes on any issues encountered and resolutions provided.
+  agent: manager
+  human_input: True
 
+researcher_task:
+  description: >
+    As the Researcher, your job is to gather, verify, and synthesize high-quality information that will support the email campaign. Use both online sources and any documents provided to ensure the Email Writer has rich, reliable content to work with. Your tasks include:
 
-manager_delegation_task :
-    description: >
-      Review the client's engagement summary and plan the overall workflow.
-      Delegate specific tasks to the Researcher, Email Writer, and Scheduler with clear priorities and timelines.
-      Confirm delegation with each agent and clarify any uncertainties.
-      If recieve any error from other agents give it to client_engagement_agent
-    expected_output: >
-      A comprehensive task plan that assigns clear responsibilities and timelines to the Researcher, Email Writer, and Scheduler agents.
-    agent: manager
-    depends_on : 
-      - client_engagement_task
+    1. **Research Scope Definition**:
+       - Understand the industry, company, and topic based on Manager’s instructions.
+       - Identify relevant areas to investigate based on the client's goals and audience.
 
-researcher_task :
-    description: >
-      Gather and verify relevant data from websites and user-uploaded documents (PDFs, DOCX, TXT, etc.).
-      Prioritize recent and reputable sources while extracting key data points.
-      Provide a detailed, curated summary of findings.
-      If the website link is not given you need check for the email given and then look at the domain website for context.
-      If any issue or missing details raise it to manager.  
-    expected_output: >
-      A detailed summary containing curated data and insights that directly support the email content, highlighting relevant facts and figures.
-    agent: researcher
-    depends_on :
-      - manager_delegation_task
-    
+    2. **Web & Document Data Collection**:
+       - **Online Sources**: Search for key data from reputable websites (company pages, press releases, industry reports, news articles, etc.).
+       - **Uploaded Files**: If the user has uploaded PDFs, DOCX, or TXT files, extract relevant data using supported tools.
 
-writer_task :
-    description: >
-      Compose a polished, engaging email draft using the curated research data, aligned with the client's objectives, tone, and target audience.
-      Incorporate recommendations from the initial engagement and managerial guidance.
-      Ensure the draft has a strong opener, a focused body, and a clear call to action.
-      If any issue or missing details raise it to manager. 
-    expected_output: >
-      A complete and review-ready email draft that fulfills the client's requirements and is ready for final scheduling or client approval.
-    agent: email_writer
-    depends_on : 
-      - manager_delegation_task
-      - research_task
-    
+    3. **Domain Contextualization**:
+       - If a company name or email domain is provided, identify the official site and extract company background, services, or recent news to provide deeper context.
+
+    4. **Fact Verification**:
+       - Cross-check claims across multiple sources to eliminate outdated or inaccurate information.
+       - Flag anything unverified or biased.
+
+    5. **Summarization & Formatting**:
+       - Deliver a clean, structured research summary.
+       - Include bullet points for quick insights and detailed references where needed.
+
+    6. **Raise Ambiguities**:
+       - If you encounter unclear goals, missing details, or data issues, notify the Manager agent immediately for resolution.
+
+  expected_output: >
+    A well-structured research summary including:
+      - Key findings related to the industry, company, and outreach topic.
+      - Verified facts, statistics, or trends that support the email message.
+      - Insights derived from the client’s website, if available.
+      - Any blockers or missing info, reported to the Manager.
+
+  agent: researcher
+  depends_on:
+    - manager_delegation_task
+
+writer_task:
+  description: >
+    As the Email Writer, your mission is to transform the client’s intent and the Researcher’s findings into a polished, compelling, and personalized email. Your writing must align with the client's tone, objectives, and target audience. Use any provided email format (e.g., PAS, AIDA) if specified. Your responsibilities include:
+
+    1. **Understand the Campaign Context**:
+       - Review client goals, tone preferences, target audience, and any formatting instructions from the Manager.
+       - Read and internalize the Researcher’s summary to ground your writing in accurate and relevant information.
+
+    2. **Draft a Structured, High-Impact Email**:
+       - **Subject Line**: Write a short, punchy subject line that encourages opens.
+       - **Opener**: Start strong — capture attention and state the email’s purpose.
+       - **Body**: Clearly present value to the recipient, integrating research insights naturally.
+       - **Call to Action**: Close with a strong CTA — e.g., book a call, respond, view a product — unless otherwise instructed.
+
+    3. **Tone and Personalization**:
+       - Match the client's desired tone (e.g., formal, friendly, persuasive).
+       - If applicable, personalize based on company name, role, or industry information from research.
+
+    4. **Review and Edit**:
+       - Proofread thoroughly for grammar, clarity, and flow.
+       - Ensure all links, names, and references are accurate and functional.
+
+    5. **Raise Clarifications**:
+       - If anything is missing or unclear, escalate to the Manager before proceeding.
+
+  expected_output: >
+    A complete email draft that:
+      - Matches the client’s goals, tone, and audience.
+      - Includes a subject line, opener, body, and CTA (unless told otherwise).
+      - Incorporates relevant research naturally and persuasively.
+      - Is clean, grammatically correct, and ready for scheduling or client approval.
+
+  agent: email_writer
+  depends_on:
+    - manager_delegation_task
+    - research_task
+
 
 scheduler_task:
-    description: >
-      Based on the client's preferences, either schedule the email for delivery or save it as a draft.
-      Verify optimal send times, platform settings, and any potential scheduling conflicts.
-      Confirm details with the client if necessary. 
-      If any issue or missing details raise it to manager. 
-    expected_output: >
-      A confirmation response detailing either the scheduled email with timing details or the status of the saved draft.
-    agent: scheduler
-    depends_on :
-      - manager_delegation_task
-      - writer_task
+  description: >
+    As the Scheduler, your task is to finalize the delivery process of the composed email by either scheduling it for dispatch or saving it as a draft based on the client's preferences and technical feasibility. Follow these steps:
+
+    1. **Review the Final Email Draft**:
+       - Confirm that the email content provided by the Email Writer is complete, clear, and approved for delivery.
+       - Ensure it aligns with the client’s tone, goals, and intended recipient(s).
+
+    2. **Interpret Client Preferences**:
+       - Retrieve the client's preferred send time and verify it aligns with optimal delivery windows (e.g., weekdays, business hours, recipient time zone).
+       - Identify the requested delivery platform (e.g., Gmail, Outlook) and ensure API or system access is available.
+
+    3. **Technical Validation**:
+       - Check for any scheduling constraints, such as blackout periods, platform limits, or overlapping scheduled messages.
+       - Confirm that the email metadata (recipient, subject line, body, CTA) is correctly formatted and platform-compliant.
+
+    4. **Handle Conflicts or Incomplete Information**:
+       - If any necessary details (e.g., send time, recipient, platform credentials) are missing or ambiguous, raise the issue with the Manager for resolution.
+       - Do not proceed with scheduling if unresolved errors exist—fallback to draft mode.
+
+    5. **Execution**:
+       - If all validations pass, use the appropriate API (e.g., Gmail or Outlook) to schedule the email for delivery.
+       - If scheduling is not possible (due to missing info or client request), save the email as a draft and prepare it for manual review.
+
+    6. **Confirmation & Feedback**:
+       - Provide a clear response confirming whether the email has been scheduled (include time, timezone, platform) or saved as a draft.
+       - Highlight any flags, caveats, or manual actions needed from the client or team.
+
+  expected_output: >
+    A structured confirmation object containing:
+      - Status: 'scheduled' or 'saved_as_draft'
+      - Scheduled Time: ISO 8601 format with timezone (if applicable)
+      - Platform Used: Gmail, Outlook, etc.
+      - Notes: Any relevant info about scheduling, fallbacks, or conflicts
+      - Escalations: If applicable, indicate issues escalated to the Manager
+
+  agent: scheduler
+  depends_on:
+    - manager_delegation_task
+    - writer_task
